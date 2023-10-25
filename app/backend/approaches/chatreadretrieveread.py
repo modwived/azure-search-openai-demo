@@ -20,19 +20,22 @@ class ChatReadRetrieveReadApproach:
     top documents from search, then constructs a prompt with them, and then uses OpenAI to generate an completion
     (answer) with that prompt.
     """
-    system_message_chat_conversation = """Assistant helps the company employees with their healthcare plan questions, and questions about the employee handbook. Be brief in your answers.
-Answer ONLY with the facts listed in the list of sources below. If there isn't enough information below, say you don't know. Do not generate answers that don't use the sources below. If asking a clarifying question to the user would help, ask the question.
-For tabular information return it as an html table. Do not return markdown format. If the question is not in English, answer in the language used in the question.
-Each source has a name followed by colon and the actual information, always include the source name for each fact you use in the response. Use square brackets to reference the source, e.g. [info1.txt]. Don't combine sources, list each source separately, e.g. [info1.txt][info2.pdf].
+    system_message_chat_conversation = """You are a digital assistant trained to assist with questions related to the diagnostic viewer product and its installation. How would you assist company employees facing issues or having questions about these topics? Remember to provide succinct answers, exclusively based on facts provided in the sources below.Guidelines:
+Only use facts from the listed sources to answer questions. If the information isn't available in the sources, state that you don't know.
+If a clarifying question could make your answer more precise, feel free to ask the user.
+Answer in the language the question was asked if it's not in English.
+Present tabular information as an HTML table, avoiding the use of markdown format.
+Source Citation:
+Always include the source name for each fact you use in the response. Use square brackets for citation, e.g., [info1.txt]. Do not amalgamate multiple sources; list each one separately, e.g., [info1.txt][info2.pdf].
 {follow_up_questions_prompt}
 {injected_prompt}
 """
-    follow_up_questions_prompt_content = """Generate three very brief follow-up questions that the user would likely ask next about their healthcare plan and employee handbook.
+    follow_up_questions_prompt_content = """Generate three very brief follow-up questions that the user would likely ask next about their GE healthcare Imaging product and diagnostic viewer.
 Use double angle brackets to reference the questions, e.g. <<Are there exclusions for prescriptions?>>.
 Try not to repeat questions that have already been asked.
 Only generate questions and do not generate any text before or after the questions, such as 'Next Questions'"""
 
-    query_prompt_template = """Below is a history of the conversation so far, and a new question asked by the user that needs to be answered by searching in a knowledge base about employee healthcare plans and the employee handbook.
+    query_prompt_template = """Below is a history of the conversation so far, and a new question asked by the user that needs to be answered by searching in a knowledge base about AW product features and server installation and  and the employee handbook.
 Generate a search query based on the conversation and the new question.
 Do not include cited source filenames and document names e.g info.txt or doc.pdf in the search query terms.
 Do not include any text inside [] or <<>> in the search query terms.
@@ -41,10 +44,10 @@ If the question is not in English, translate the question to English before gene
 If you cannot generate a search query, return just the number 0.
 """
     query_prompt_few_shots = [
-        {'role' : USER, 'content' : 'What are my health plans?' },
-        {'role' : ASSISTANT, 'content' : 'Show available health plans' },
-        {'role' : USER, 'content' : 'does my plan cover cardio?' },
-        {'role' : ASSISTANT, 'content' : 'Health plan cardio coverage' }
+        {'role' : USER, 'content' : 'What is AW Server?' },
+        {'role' : ASSISTANT, 'content' : 'Show AW Server - Product Description' },
+        {'role' : USER, 'content' : 'What are AW server system components?' },
+        {'role' : ASSISTANT, 'content' : 'The three basic components in the AW Server system are:1. The AW SERVER. This is the hardware foundation for the AW SERVER system, and is the direct responsibility of GEHC, including repair and/or replacement by vendors (HP) acting as agents of GEHC. 2. The NETWORK, which connects the AW Server to the clients, PACS, etc. The network is NOT the responsibility of GEHC. 3. The CLIENTS, which are provided by the customer. Other than installing client software on ONE customer PC, the clients are NOT the responsibility of GEHC.' }
     ]
 
     def __init__(self, search_client: SearchClient, chatgpt_deployment: str, chatgpt_model: str, embedding_deployment: str, sourcepage_field: str, content_field: str):

@@ -27,7 +27,7 @@ class ReadRetrieveReadApproach(AskApproach):
     """
 
     template_prefix = \
-"You are an intelligent assistant helping Contoso Inc employees with their healthcare plan questions and employee handbook questions. " \
+"You are a digital assistant trained to assist with questions related to the diagnostic viewer product and its installation. How would you assist company employees facing issues or having questions about these topics? Remember to provide succinct answers, exclusively based on facts provided in the sources below. " \
 "Answer the question using only the data provided in the information sources below. " \
 "For tabular information return it as an html table. Do not return markdown format. " \
 "Each source has a name followed by colon and the actual data, quote the source name for each piece of data you use in the response. " \
@@ -45,7 +45,7 @@ Question: {input}
 
 Thought: {agent_scratchpad}"""
 
-    CognitiveSearchToolDescription = "useful for searching the Microsoft employee benefits information such as healthcare plans, retirement plans, etc."
+    CognitiveSearchToolDescription = "useful for searching the GE healthcare Product information such as product overview and installation instruction etc."
 
     def __init__(self, search_client: SearchClient, openai_deployment: str, embedding_deployment: str, sourcepage_field: str, content_field: str):
         self.search_client = search_client
@@ -145,7 +145,7 @@ class EmployeeInfoTool(CsvLookupTool):
         super().__init__(filename="data/employeeinfo.csv",
                          key_field="name",
                          name="Employee",
-                         description="useful for answering questions about the employee, their benefits and other personal information",
+                         description="useful for answering questions about the product, their benefits and other personal information",
                          callbacks=callbacks)
         self.func = lambda _: 'Not implemented'
         self.coroutine = self.employee_info
